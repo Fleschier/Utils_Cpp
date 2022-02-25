@@ -1,0 +1,12 @@
+#ifndef THREADPOOL_GLOBAL_H
+#define THREADPOOL_GLOBAL_H
+
+#include <QtCore/qglobal.h>
+
+#if defined(THREADPOOL_LIBRARY)
+#  define THREADPOOLSHARED_EXPORT Q_DECL_EXPORT
+#else
+#  define THREADPOOLSHARED_EXPORT Q_DECL_IMPORT
+#endif
+
+#endif // THREADPOOL_GLOBAL_H
