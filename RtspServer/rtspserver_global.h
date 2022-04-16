@@ -1,0 +1,12 @@
+#ifndef RTSPSERVER_GLOBAL_H
+#define RTSPSERVER_GLOBAL_H
+
+#include <QtCore/qglobal.h>
+
+#if defined(RTSPSERVER_LIBRARY)
+#  define RTSPSERVERSHARED_EXPORT Q_DECL_EXPORT
+#else
+#  define RTSPSERVERSHARED_EXPORT Q_DECL_IMPORT
+#endif
+
+#endif // RTSPSERVER_GLOBAL_H
