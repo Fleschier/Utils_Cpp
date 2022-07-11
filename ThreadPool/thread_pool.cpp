@@ -25,6 +25,13 @@ thread_pool::thread_pool():
 
 thread_pool::~thread_pool(){
   done = true;
+  printf("begin to release threads...\n");
+  data_cond.notify_all();
+  // make sure that all the worker threads are released!
+  for(auto& t : threads){
+      if(t.joinable())
+        t.join();
+  }
   printf("thread pool deleted done!\n");
 }
 
@@ -35,8 +42,11 @@ void thread_pool::worker_thread(){
       function_wrapper task;
 
       std::unique_lock<std::mutex> lock(work_mut);
-      data_cond.wait(lock, [&task, this]{return work_queue.try_pop(task);});   // 工作线程等待任务队列来任务
-      printf("队列待执行任务数： %d\n", work_queue.length());
+      data_cond.wait(lock, [&task, this]{return (work_queue.try_pop(task) || done);});   // 工作线程等待任务队列来任务
+      if(done){
+          break;
+      }
+//      printf("队列待执行任务数： %d\n", work_queue.length());
       if(lock.owns_lock())    // 如果持有锁
         lock.unlock();  // 解锁，然后执行任务
       task();
@@ -63,6 +73,7 @@ void thread_pool::worker_thread(){
 //           */
 //        }
 //    }
+  std::cout << "worker thread released.\n";
 }
 
 void thread_pool::run_pending_task(){    // 执行挂起的任务

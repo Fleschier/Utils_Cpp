@@ -26,10 +26,10 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 
 INCLUDEPATH += /usr/local/include       \
+            /usr/local/ffmpeg/include \
             ./include/
 
 LIBS += /usr/local/lib/libopencv_*.so
-#LIBS += /usr/local/ffmpeg/lib/libav*.so
 LIBS += -L./lib/ -lAVH264Encoder
 
 

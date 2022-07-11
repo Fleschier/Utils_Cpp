@@ -1,6 +1,8 @@
 #ifndef AVH264ENCODER_H
 #define AVH264ENCODER_H
 
+#include "avh264encoder_global.h"
+
 #include <opencv2/opencv.hpp>
 
 #define __STDC_CONSTANT_MACROS
@@ -22,14 +24,14 @@ typedef struct AvH264EncConfig_T {
 
 	int width = 1920;
 	int height = 1080;
-	int frame_rate = 30;
+	int frame_rate = 60;
 	int64_t bit_rate = 1000000;
 	int gop_size = 250;
 	int max_b_frames = 0;
 }AvH264EncConfig;
 
 
-class AvH264Encoder
+class AVH264ENCODERSHARED_EXPORT AvH264Encoder
 {
 
 public:

@@ -1,0 +1,12 @@
+#ifndef XSTITCHER_GLOBAL_H
+#define XSTITCHER_GLOBAL_H
+
+#include <QtCore/qglobal.h>
+
+#if defined(XSTITCHER_LIBRARY)
+#  define XSTITCHERSHARED_EXPORT Q_DECL_EXPORT
+#else
+#  define XSTITCHERSHARED_EXPORT Q_DECL_IMPORT
+#endif
+
+#endif // XSTITCHER_GLOBAL_H

@@ -5,16 +5,35 @@
 #include <memory>
 #include <iostream>
 #include <string>
+#include <QSettings>
 
 #include "avh264encoder.h"
 
 RTSPServer::RTSPServer(){
-  AvH264EncConfig h264config ={1920, 1080, 30, 1000000, 250, 0};
+  // read setting file
+  QSettings *configIniRead = new QSettings("./SendUdpConfig.ini", QSettings::IniFormat);
+  configIniRead->setIniCodec("utf-8");
+
+  AvH264EncConfig conf;
+  conf.bit_rate = configIniRead->value("Code/BitRate").toInt();
+  conf.width = configIniRead->value("Code/width").toInt();
+  conf.height = configIniRead->value("Code/height").toInt();
+  conf.gop_size = configIniRead->value("Code/gop_size").toInt();
+  conf.max_b_frames = configIniRead->value("Code/max_b_frames").toInt();
+  conf.frame_rate = configIniRead->value("Code/frame_rate").toInt();
+
+  std::cout << "Encode Settings: ==============================\n" <<
+               "BitRate: " << conf.bit_rate << "  width: " << conf.width <<
+               "  height: " << conf.height << "  gop_size: " << conf.gop_size <<
+               "  max_b_frames: " << conf.max_b_frames << "  frame_rate: " <<
+               conf.frame_rate << std::endl;
+
   m_h264_encoder = new AvH264Encoder();
-  m_h264_encoder->open(h264config);
+  m_h264_encoder->open(conf);
 
   event_loop.reset(new xop::EventLoop());
 
+  delete configIniRead;
 }
 
 RTSPServer::~RTSPServer(){
@@ -69,7 +88,7 @@ void RTSPServer::Init(std::string m_port){
 //  std::thread t1(&RtspServer::sendFrameThread,this, server.get(), session_id,);
 //          t1.detach();
 
-//  std::cout << "Play URL: " << rtsp_url << std::endl;
+  std::cout << "Play URL: " << rtsp_url << std::endl;
 
 //  while (1) {
 //          xop::Timer::Sleep(100);
@@ -89,6 +108,10 @@ void RTSPServer::sendFrameThread(cv::Mat mat){
 
   encoded_pkt = m_h264_encoder->encode(mat);
 
+  if(!encoded_pkt){
+      std::cout << "encoder returned -11, waiting for encode buffer fulfilled";
+      return;
+  }
 
 //  bool end_of_frame = false;
 //  int frame_size = h264_file->ReadFrame((char*)frame_buf.get(), buf_size, &end_of_frame);
@@ -109,6 +132,6 @@ void RTSPServer::sendFrameThread(cv::Mat mat){
       return;
   }
 
-  xop::Timer::Sleep(40);
+//  xop::Timer::Sleep(20);
 
 }

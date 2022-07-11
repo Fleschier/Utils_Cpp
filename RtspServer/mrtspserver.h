@@ -23,7 +23,7 @@ private:
 
   xop::MediaSessionId session_id;
 
-  std::string port = "8888";
+  std::string port;
 
   AVPacket* encoded_pkt;
 
