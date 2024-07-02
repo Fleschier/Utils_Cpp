@@ -14,7 +14,12 @@
 
 
 #include <unistd.h>       // for syscall()
-#include <sys/syscall.h>  // for SYS_xxx definitions
+//#include <sys/syscall.h>  // for SYS_xxx definitions
+#if __linux
+#include <sys/syscall.h>
+#elif defined(_WIN32) || defined(_WIN64)
+#include <windows.h>       // Or something like it. 
+#endif
 
 #include "threadpool_global.h"
 
